@@ -16,10 +16,8 @@ def main():
             method_frame = channel.basic_get(queue = 'process_queue')        
             message = json.loads(body)
             rpa_id_image = message.get("id_apirpa")
-            #env_file_path = message.get("file_path")
-            env =""
-            image = os.system(f"docker image ls {rpa_id_image}".format(rpa_id_image))
-            os.system("docker run -d -v {volume} -e {env} {image}".format(volume=env_file_path,env=env,image=image))
+            path_file = message.get("path")
+           
             print(f" [x] Received {body}")
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
         except Exception as error:
