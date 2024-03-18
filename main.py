@@ -15,8 +15,9 @@ def main():
         try:
             method_frame = channel.basic_get(queue = 'process_queue')        
             message = json.loads(body)
-            rpa_id_image = message.get("id_apirpa")
             path_file = message.get("path")
+            cmd = f"python {path_file}".format(path_file)
+            os.system(cmd)
            
             print(f" [x] Received {body}")
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
