@@ -16,7 +16,7 @@ def main():
             method_frame = channel.basic_get(queue = 'process_queue')        
             message = json.loads(body)
             path_file = message.get("path")
-            cmd = f"python {path_file}".format(path_file)
+            cmd = f"python {path_file} main.py".format(path_file)
             os.system(cmd)
            
             print(f" [x] Received {body}")
