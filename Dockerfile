@@ -13,6 +13,6 @@ RUN pip3 install --upgrade pip && pip3 install -r requeriments.txt
 
 ##Run only production
 #CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "app:create_app()" ]
-EXPOSE 8080
+
 
 CMD ["python3" , "main.py"]

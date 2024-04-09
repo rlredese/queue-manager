@@ -4,6 +4,12 @@ import requests
 import json
 from config import settings
 import pika, sys, os
+def create_work_instructiod(path: str) -> json:
+    """"""
+    with open("list_work_instruction.json","+r") as file:
+        for item in file["list_path_work"]:
+            if path in item:
+                return item
 
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
@@ -13,10 +19,12 @@ def main():
 
     def callback(ch, method, properties, body):
         try:
+            
             method_frame = channel.basic_get(queue = 'process_queue')        
             message = json.loads(body)
             path_file = message.get("path")
-            cmd = f"python {path_file} main.py".format(path_file)
+            INST_WORK = create_work_instructiod(path_file)
+            cmd = f"py {path_file} {INST_WORK}".format(path_file,INST_WORK)
             os.system(cmd)
            
             print(f" [x] Received {body}")
