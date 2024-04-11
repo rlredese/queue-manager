@@ -4,6 +4,8 @@ import requests
 import json
 from config import settings
 import pika, sys, os
+import subprocess
+
 def create_work_instructiod(path: str) -> json:
     """"""
     with open("list_work_instruction.json","+r") as file:
@@ -12,7 +14,7 @@ def create_work_instructiod(path: str) -> json:
                 return item
 
 def main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='179.127.167.148'))
     channel = connection.channel()
 
     channel.queue_declare(queue='process_queue',durable=True)
@@ -26,9 +28,11 @@ def main():
             INST_WORK = create_work_instructiod(path_file)
             cmd = f"py {path_file} {INST_WORK}".format(path_file,INST_WORK)
             os.system(cmd)
-           
+            result = subprocess.check_output(cmd, shell=True, text=True)
+            if result:
+                channel.basic_ack(delivery_tag=method_frame.delivery_tag)
             print(f" [x] Received {body}")
-            channel.basic_ack(delivery_tag=method_frame.delivery_tag)
+            
         except Exception as error:
             return error
         
